@@ -145,6 +145,44 @@
   .stakes .kicker{margin:0;padding:16px 20px;border-top:1px solid var(--red-line);background:rgba(224,85,63,.07);color:#f0cabf;font-size:14px}
   .stakes .kicker b{color:#ffb3a6}
 
+  /* ---- EFFORT TOTALS ---- */
+  td.hrs{font-family:var(--mono);color:var(--gold-soft);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+  th.hrs{text-align:right}
+  td.cx{font-family:var(--mono);font-size:11px}
+  .cxpill{display:inline-block;padding:2px 8px;border-radius:2px;font-weight:600}
+  .cx-hi{color:#f4c3ba;background:rgba(224,85,63,.12);border:1px solid var(--crit)}
+  .cx-md{color:#e9d59e;background:rgba(201,162,75,.14);border:1px solid var(--med)}
+  .cx-lo{color:var(--ink-dim);background:var(--panel-2);border:1px solid var(--line)}
+  .totband{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;margin-top:1px;border:1px solid var(--gold-deep);background:var(--gold-deep)}
+  .totband div{background:var(--panel);padding:16px 18px}
+  .totband dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+  .totband dd{margin:7px 0 0;font-family:var(--cond);font-weight:700;color:var(--gold);font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+  .totband dd small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;color:var(--ink-dim);margin-top:6px;letter-spacing:0}
+  .fineprint{margin-top:12px;font-size:12.5px;color:var(--ink-faint);font-style:italic;max-width:74ch}
+
+  /* ---- SCOPE ---- */
+  .scopegrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:6px;border:1px solid var(--line);background:var(--line)}
+  @media (max-width:560px){.scopegrid{grid-template-columns:1fr}}
+  .scopecol{background:var(--panel);padding:18px}
+  .scopecol h3{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+  .scopecol.get h3{color:var(--gold)}
+  .scopecol.not h3{color:var(--red)}
+  .scopecol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+  .scopecol li{position:relative;padding-left:22px;font-size:13.5px;color:var(--ink)}
+  .scopecol li::before{position:absolute;left:0;top:0;font-family:var(--mono);font-weight:700}
+  .scopecol.get li::before{content:"✓";color:var(--gold)}
+  .scopecol.not li::before{content:"✕";color:var(--red)}
+
+  /* ---- ACKNOWLEDGEMENT ---- */
+  .ack{margin-top:22px;border:1px dashed var(--line-bright);background:var(--panel-2);padding:20px}
+  .ack .al{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  .ack p{margin:0 0 18px;font-size:13.5px;color:var(--ink-dim);max-width:74ch}
+  .ackfields{display:grid;grid-template-columns:1fr 1fr;gap:22px 28px}
+  @media (max-width:560px){.ackfields{grid-template-columns:1fr}}
+  .ackfields div{display:flex;flex-direction:column;gap:6px}
+  .ackfields .ln{height:26px;border-bottom:1px solid var(--line-bright)}
+  .ackfields label{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+
   .signoff{margin:56px -20px 0;padding:34px 24px;border-top:1px solid var(--gold-deep);background:var(--panel);color:var(--ink-dim);font-size:13.5px}
   .signoff .t{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
   .signoff p{margin:0 0 10px;max-width:74ch}
@@ -372,6 +410,61 @@
     </div>
   </section>
 
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">09</span><h2>Estimated effort to complete in-house</h2><span class="chip high">Plan for it</span></div>
+    <p class="lead">Realistic engineering effort for an <b>experienced</b> Astro / Cloudflare developer to reproduce the full stack below. A generalist or a template-site builder will take materially longer, and some phases (CMS auth, SEO integrity) are where inexperienced developers stall.</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Phase</th><th>Work</th><th class="hrs">Est. hours</th><th>Complexity</th></tr></thead>
+        <tbody>
+          <tr><td>P01</td><td>Provision accounts (GitHub, Cloudflare, Web3Forms, Google)</td><td class="hrs">2–3</td><td class="cx"><span class="cxpill cx-lo">Low</span></td></tr>
+          <tr><td>P02</td><td>Local build environment + first successful build</td><td class="hrs">1–2</td><td class="cx"><span class="cxpill cx-lo">Low</span></td></tr>
+          <tr><td>P03</td><td>Repo + Cloudflare Pages pipeline + trailing-slash config</td><td class="hrs">3–5</td><td class="cx"><span class="cxpill cx-md">Medium</span></td></tr>
+          <tr><td>P04</td><td>Domain / DNS cutover + SSL + redirects (+ propagation wait)</td><td class="hrs">2–4</td><td class="cx"><span class="cxpill cx-md">Medium</span></td></tr>
+          <tr><td>P05</td><td>Rebuild Sveltia CMS auth (OAuth app + Cloudflare Worker)</td><td class="hrs">4–8</td><td class="cx"><span class="cxpill cx-hi">High</span></td></tr>
+          <tr><td>P06</td><td>Swap + test the lead-form backend</td><td class="hrs">1–2</td><td class="cx"><span class="cxpill cx-lo">Low</span></td></tr>
+          <tr><td>P07</td><td>SEO/GEO integrity: sitemap, canonical, schema, GSC, redirect map</td><td class="hrs">4–8</td><td class="cx"><span class="cxpill cx-hi">High</span></td></tr>
+          <tr><td>P08</td><td>Analytics/tags re-provisioning + maintenance setup</td><td class="hrs">2–4</td><td class="cx"><span class="cxpill cx-md">Medium</span></td></tr>
+          <tr><td>QA</td><td>Full 126-page regression + go-live verification</td><td class="hrs">3–6</td><td class="cx"><span class="cxpill cx-md">Medium</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <dl class="totband">
+      <div><dt>Total one-time effort</dt><dd>22–42 hrs<small>experienced dev; more for a generalist</small></dd></div>
+      <div><dt>Typical build cost</dt><dd>$2k–$6k<small>at market freelance rates of ~$75–150/hr</small></dd></div>
+      <div><dt>Realistic timeline</dt><dd>2–4 wks<small>incl. DNS propagation + OAuth review + testing</small></dd></div>
+      <div><dt>Then, ongoing</dt><dd>Monthly<small>updates, hosting, uptime, content, fixes — indefinitely</small></dd></div>
+    </dl>
+    <p class="fineprint">Estimates are for engineering labor only and exclude any new content, design changes, or the learning curve if the developer is new to Astro or Cloudflare Workers. Rate range reflects typical US freelance web-development pricing, not a KitCat quote.</p>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">10</span><h2>What transfers — and what does not</h2></div>
+    <p class="lead">A precise inventory of the handoff boundary, so there is no ambiguity about what you are receiving and what remains KitCat's.</p>
+    <div class="scopegrid">
+      <div class="scopecol get">
+        <h3>You receive</h3>
+        <ul>
+          <li>Full website source code (all 126 pages)</li>
+          <li>All 70 existing blog posts (as files, in the code)</li>
+          <li>Site images &amp; assets bundled in the source</li>
+          <li>Initiation of the domain transfer to your Cloudflare</li>
+          <li>This runbook of everything required to relaunch</li>
+        </ul>
+      </div>
+      <div class="scopecol not">
+        <h3>You do NOT receive</h3>
+        <ul>
+          <li>KitCat's Cloudflare account or hosting environment</li>
+          <li>The CMS authentication Worker (must be rebuilt)</li>
+          <li>KitCat's Web3Forms account or form key</li>
+          <li>KitCat's internal SEO strategy &amp; audit documents</li>
+          <li>Any ongoing support, monitoring, or maintenance</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <div class="signoff rev">
     <div class="t">Delivery terms</div>
     <p>KitCat Agency's obligation is fulfilled upon delivery of the source archive and initiation of the domain transfer. The site is provided <b>as-is</b>. All eight phases above are the responsibility of the receiving party. KitCat provides no warranty, support, or on-call coverage for the self-hosted deployment.</p>
@@ -379,6 +472,18 @@
     <div class="offramp">
       <b>Off-ramp:</b> If in-house migration is not the direction you want, KitCat can continue hosting, maintaining, and running the site under the current arrangement — in which case none of the above is necessary and nothing changes on your end.
     </div>
+
+    <div class="ack">
+      <div class="al">Acknowledgement of handoff</div>
+      <p>By signing below, the recipient confirms they have received the website source code, understand that relaunching and maintaining the site is now entirely their responsibility, and accept that KitCat Agency's involvement — including hosting, the CMS auth service, the form backend, and all support — ends upon this handoff.</p>
+      <div class="ackfields">
+        <div><span class="ln"></span><label>Received by (print name)</label></div>
+        <div><span class="ln"></span><label>Company</label></div>
+        <div><span class="ln"></span><label>Signature</label></div>
+        <div><span class="ln"></span><label>Date</label></div>
+      </div>
+    </div>
+
     <div class="stamp"><b>KitCat</b> Agency</div>
     <p style="margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--ink-faint)">Handoff runbook · precisionplumbingpros.com · Rev 2026-08-20</p>
   </div>
