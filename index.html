@@ -129,6 +129,22 @@
   .legend span{display:inline-flex;align-items:center;gap:7px}
   .legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
 
+  /* ---- STAKES PANEL ---- */
+  .stakes{margin:44px 0 0;border:1px solid var(--red-line);background:linear-gradient(180deg,var(--red-deep),var(--panel) 70%)}
+  .stakes .sh{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--red-line)}
+  .stakes .sh .warn{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#0d0c08;background:var(--red);padding:4px 10px;border-radius:2px}
+  .stakes .sh h2{font-family:var(--cond);font-weight:700;color:var(--white);font-size:clamp(19px,3.2vw,25px);margin:0;letter-spacing:-.005em}
+  .stakes .intro{padding:16px 20px 4px;color:#e4cfc6;font-size:14.5px;max-width:74ch}
+  .stakes .intro b{color:var(--gold)}
+  .risks{padding:8px 20px 20px;display:grid;gap:1px}
+  .risk{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--red-line);align-items:start}
+  .risk:last-child{border-bottom:0}
+  .risk .rn{font-family:var(--mono);font-size:22px;line-height:1;color:var(--red)}
+  .risk h3{font-family:var(--sans);font-weight:600;color:var(--white);font-size:14.5px;margin:0 0 4px}
+  .risk p{margin:0;color:var(--ink-dim);font-size:13.5px;max-width:66ch}
+  .stakes .kicker{margin:0;padding:16px 20px;border-top:1px solid var(--red-line);background:rgba(224,85,63,.07);color:#f0cabf;font-size:14px}
+  .stakes .kicker b{color:#ffb3a6}
+
   .signoff{margin:56px -20px 0;padding:34px 24px;border-top:1px solid var(--gold-deep);background:var(--panel);color:var(--ink-dim);font-size:13.5px}
   .signoff .t{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
   .signoff p{margin:0 0 10px;max-width:74ch}
@@ -171,6 +187,22 @@
       <b>Read before accepting delivery</b>
       <p>This package is source code only. It is not a hosted, running website. Standing it back up is a multi-system engineering task spanning Git, Cloudflare Pages, Cloudflare Workers, DNS, OAuth, and third-party APIs. Every phase below is mandatory for full feature parity with the site as it runs today. Attempting this without a competent web developer will take the public site, the lead forms, or the search rankings offline.</p>
     </div>
+  </div>
+
+  <div class="stakes rev">
+    <div class="sh">
+      <span class="warn">Read this part</span>
+      <h2>What's at stake: your Google rankings — and your phone ringing</h2>
+    </div>
+    <p class="intro">Precision has ranked across North Georgia for 25+ years. That visibility is <b>not automatic</b> — it lives inside the technical SEO layer of this exact website. A migration that skips or fumbles the steps in this document doesn't just "look wrong." It can remove the site from Google entirely — and the failures are silent, so you find out weeks later when the calls dry up.</p>
+    <div class="risks">
+      <div class="risk"><span class="rn">✕</span><div><h3>The site gets deindexed</h3><p>One wrong canonical or trailing-slash setting makes Google treat every page as a duplicate and drop them from search results. No error message — the rankings simply vanish.</p></div></div>
+      <div class="risk"><span class="rn">✕</span><div><h3>Ranked pages start returning 404s</h3><p>Every currently-ranked URL that isn't redirected after the domain cutover loses its position and its accumulated authority. All 70 blog posts plus the service and location pages are exposed.</p></div></div>
+      <div class="risk"><span class="rn">✕</span><div><h3>You disappear from AI search</h3><p>The schema and <code>llms.txt</code> markup that get Precision cited inside Google AI Overviews, ChatGPT and Perplexity answers must transfer intact — or the site stops surfacing in AI results your competitors will still appear in.</p></div></div>
+      <div class="risk"><span class="rn">✕</span><div><h3>Local-pack signals break</h3><p>Losing the Search Console and Google Business Profile connections weakens the local map-pack ranking that drives the bulk of home-service calls — and removes your ability to even see the damage happening.</p></div></div>
+      <div class="risk"><span class="rn">✕</span><div><h3>Recovery is not a button</h3><p>Re-indexing after a broken migration takes weeks to months, and full recovery is never guaranteed. Throughout that window, competitors are the ones taking the calls that used to be yours.</p></div></div>
+    </div>
+    <p class="kicker"><b>In plain terms:</b> done wrong, the website keeps existing — it just quietly stops sending you customers. Rankings are the hardest thing to rebuild and the easiest thing to lose in a handoff. Treat every SEO step below as mandatory, not optional.</p>
   </div>
 
   <section class="rev">
