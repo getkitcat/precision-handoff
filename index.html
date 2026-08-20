@@ -1,0 +1,354 @@
+<title>Precision Web Migration Runbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --panel:#141310;
+    --panel-2:#1b1915;
+    --line:#2a2620;
+    --line-bright:#3c3529;
+    --ink:#d8d3c6;
+    --ink-dim:#9d968a;
+    --ink-faint:#6a655b;
+    --white:#f6f2e8;
+    --gold:#f5c518;
+    --gold-soft:#e8b62a;
+    --gold-deep:#4a3b12;
+    --gold-faint:#241d0c;
+    --red:#e0553f;
+    --red-deep:#2a130f;
+    --red-line:#4a2018;
+    --crit:#e0553f;
+    --high:var(--gold);
+    --med:#c9a24b;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+    --cond:'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:15px;line-height:1.6;
+  }
+  .sheet{max-width:940px;margin:0 auto;padding:0 20px 120px}
+  @media (prefers-reduced-motion:no-preference){
+    .rev{opacity:0;transform:translateY(10px);animation:rise .5s ease forwards}
+    @keyframes rise{to{opacity:1;transform:none}}
+  }
+
+  /* ---- MASTHEAD ---- */
+  header.mast{
+    position:relative;overflow:hidden;
+    margin:0 -20px 0;padding:64px 20px 40px;
+    border-bottom:1px solid var(--gold-deep);
+    background:
+      radial-gradient(130% 90% at 100% 0%,rgba(245,197,24,.10),transparent 55%),
+      var(--panel);
+  }
+  header.mast::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+    background:repeating-linear-gradient(45deg,var(--gold) 0 18px,#0a0a0b 18px 36px)}
+  .kick{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .kick .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  h1{
+    font-family:var(--cond);font-weight:700;color:var(--white);
+    font-size:clamp(30px,6vw,54px);line-height:1.02;letter-spacing:-.01em;
+    text-wrap:balance;margin:20px 0 14px;
+  }
+  .sub{max-width:60ch;color:var(--ink-dim);font-size:16px;margin:0}
+  .meta{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    margin-top:34px;border:1px solid var(--line);background:var(--line)
+  }
+  .meta div{background:var(--panel-2);padding:12px 14px}
+  .meta dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+  .meta dd{margin:5px 0 0;font-family:var(--mono);font-size:13px;color:var(--gold-soft);font-weight:500}
+
+  /* ---- HAZARD WARNING BANNER (black/gold caution tape) ---- */
+  .banner{
+    margin:0 -20px;padding:22px 24px;
+    border-bottom:1px solid var(--gold-deep);
+    background:
+      repeating-linear-gradient(45deg,transparent,transparent 15px,rgba(245,197,24,.045) 15px,rgba(245,197,24,.045) 30px),
+      var(--gold-faint);
+    display:flex;gap:18px;align-items:flex-start
+  }
+  .banner .sym{font-size:26px;line-height:1;color:var(--gold)}
+  .banner b{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .banner p{margin:0;color:#e4dcc4;font-size:14px;max-width:70ch}
+
+  /* ---- SECTION SCAFFOLD ---- */
+  section{margin-top:52px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--line-bright);padding-bottom:12px;margin-bottom:8px}
+  .sec-no{font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:600;letter-spacing:.05em}
+  .sec-head h2{font-family:var(--cond);font-weight:700;color:var(--white);font-size:clamp(20px,3.4vw,27px);margin:0;letter-spacing:-.005em;text-wrap:balance}
+  .lead{color:var(--ink-dim);margin:14px 0 22px;max-width:68ch}
+
+  /* ---- SEVERITY CHIP ---- */
+  .chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:2px;white-space:nowrap;align-self:center;margin-left:auto}
+  .chip.crit{color:#f4c3ba;background:rgba(224,85,63,.12);border:1px solid var(--crit)}
+  .chip.high{color:#0d0c08;background:var(--gold);border:1px solid var(--gold);font-weight:700}
+  .chip.med{color:#e9d59e;background:rgba(201,162,75,.12);border:1px solid var(--med)}
+
+  /* ---- PHASE CARD ---- */
+  .phase{border:1px solid var(--line);background:var(--panel);margin-top:14px;border-left:3px solid var(--gold-deep)}
+  .phase>.bar{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .phase>.bar .pid{font-family:var(--mono);font-size:12px;color:var(--gold-soft);font-weight:600}
+  .phase>.bar .pt{font-family:var(--sans);font-weight:600;color:var(--white);font-size:15px}
+  .phase .body{padding:16px}
+  .phase p{margin:0 0 12px}
+  .phase p:last-child{margin-bottom:0}
+
+  ul.steps{list-style:none;margin:0 0 4px;padding:0;counter-reset:s}
+  ul.steps li{position:relative;padding:8px 0 8px 30px;border-bottom:1px dashed var(--line);font-size:14px}
+  ul.steps li:last-child{border-bottom:0}
+  ul.steps li::before{
+    content:counter(s,decimal-leading-zero);counter-increment:s;
+    position:absolute;left:0;top:8px;font-family:var(--mono);font-size:11px;color:var(--gold);font-weight:600
+  }
+  ul.steps code,.phase code,.consq code,.sub code{font-family:var(--mono);font-size:.85em;background:var(--panel-2);color:var(--gold-soft);padding:1px 6px;border:1px solid var(--line);border-radius:2px;white-space:nowrap}
+
+  .consq{display:flex;gap:12px;margin-top:14px;padding:12px 14px;border-left:3px solid var(--red);background:var(--red-deep)}
+  .consq .l{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:700;flex:0 0 auto;padding-top:2px}
+  .consq p{margin:0;color:#e8c8c0;font-size:13.5px}
+
+  /* ---- STACK TABLE ---- */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);margin-top:6px}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);background:var(--panel-2);font-weight:600}
+  tbody td{color:var(--ink)}
+  tbody td:first-child{font-family:var(--mono);color:var(--white);font-weight:500;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+  td .tag{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+
+  /* ---- LEGEND ---- */
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--ink-dim)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+  .signoff{margin:56px -20px 0;padding:34px 24px;border-top:1px solid var(--gold-deep);background:var(--panel);color:var(--ink-dim);font-size:13.5px}
+  .signoff .t{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .signoff p{margin:0 0 10px;max-width:74ch}
+  .signoff .stamp{margin-top:20px;font-family:var(--cond);font-weight:700;color:var(--white);font-size:19px}
+  .signoff .stamp b{color:var(--gold)}
+  .offramp{margin-top:18px;padding:14px 16px;border:1px solid var(--gold-deep);background:rgba(245,197,24,.05);color:#e6dcc0;font-size:13.5px}
+  .offramp b{color:var(--gold)}
+  a{color:var(--gold)}
+
+  @page{size:A4;margin:10mm}
+  @media print{
+    html,body{background:#0a0a0b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
+    .rev{opacity:1 !important;transform:none !important;animation:none !important}
+    .sheet{max-width:100% !important;padding:0 4mm 4mm !important}
+    header.mast{margin:0 !important;padding:34px 22px 30px !important}
+    .banner,.signoff{margin-left:0 !important;margin-right:0 !important}
+    header.mast,.banner,section,.phase,.tblwrap,.signoff,.meta{break-inside:avoid}
+    h1{font-size:32px}
+    section{margin-top:30px}
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="mast rev">
+    <div class="kick"><span class="dot"></span> KitCat Agency · Engineering Handoff · Rev 2026-08-20</div>
+    <h1>Precision Web — Migration &amp; Self-Hosting Runbook</h1>
+    <p class="sub">Complete operational scope required to transfer <code>precisionplumbingpros.com</code> off KitCat infrastructure and run it in-house. This is the minimum viable checklist — not a tutorial.</p>
+    <dl class="meta">
+      <div><dt>Target</dt><dd>precisionplumbingpros.com</dd></div>
+      <div><dt>Stack</dt><dd>Astro 5 · Cloudflare</dd></div>
+      <div><dt>Pages</dt><dd>126 routed</dd></div>
+      <div><dt>Prereq skill</dt><dd>Pro web dev</dd></div>
+    </dl>
+  </header>
+
+  <div class="banner rev">
+    <div class="sym">⚠</div>
+    <div>
+      <b>Read before accepting delivery</b>
+      <p>This package is source code only. It is not a hosted, running website. Standing it back up is a multi-system engineering task spanning Git, Cloudflare Pages, Cloudflare Workers, DNS, OAuth, and third-party APIs. Every phase below is mandatory for full feature parity with the site as it runs today. Attempting this without a competent web developer will take the public site, the lead forms, or the search rankings offline.</p>
+    </div>
+  </div>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">00</span><h2>System of record</h2></div>
+    <p class="lead">What you are actually inheriting. The site is a statically-built Astro application with two live external dependencies (a headless CMS auth service and a form backend) that currently resolve to <b>KitCat-owned</b> infrastructure. Those do not transfer with the code.</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Component</th><th>Technology</th><th>Currently hosted on</th></tr></thead>
+        <tbody>
+          <tr><td>Site framework</td><td>Astro 5 (static SSG)</td><td class="tag">builds locally → dist/</td></tr>
+          <tr><td>Hosting</td><td>Cloudflare Pages</td><td class="tag">KitCat Cloudflare acct</td></tr>
+          <tr><td>Image pipeline</td><td>sharp (native binary)</td><td class="tag">build-time</td></tr>
+          <tr><td>Blog CMS</td><td>Sveltia CMS</td><td class="tag">/admin · GitHub-backed</td></tr>
+          <tr><td>CMS auth</td><td>Cloudflare Worker (OAuth)</td><td class="tag">sveltia-cms-auth.getkitcat.workers.dev</td></tr>
+          <tr><td>Lead forms</td><td>Web3Forms API</td><td class="tag">KitCat Web3Forms key</td></tr>
+          <tr><td>Source control</td><td>GitHub (private)</td><td class="tag">getkitcat/precision-web</td></tr>
+          <tr><td>Analytics/tags</td><td>GTM / Cloudflare Zaraz</td><td class="tag">KitCat CF dashboard</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--crit)"></i> CRITICAL — site/leads/rankings go dark if wrong</span>
+      <span><i style="background:var(--gold)"></i> HIGH — feature breaks</span>
+      <span><i style="background:var(--med)"></i> MEDIUM — degraded but recoverable</span>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">01</span><h2>Provision your own accounts</h2><span class="chip high">High</span></div>
+    <p class="lead">None of the services below convey with the source. Each must be created, verified, and billed under your own organization before anything else can proceed.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P01</span><span class="pt">Accounts checklist</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>GitHub account/org to hold the private repository (126 pages of source).</li>
+          <li>Cloudflare account with <b>Pages</b>, <b>Workers</b>, and <b>DNS</b> enabled.</li>
+          <li>Domain registrar access for <code>precisionplumbingpros.com</code> (transfer inbound — see P05).</li>
+          <li>Web3Forms account for a new form access key.</li>
+          <li>Google Search Console + GA4 property, re-verified under your own Google account.</li>
+          <li>Google Business Profile management access (for local ranking continuity).</li>
+        </ul>
+        <div class="consq"><span class="l">If skipped</span><p>The site remains dependent on KitCat accounts you do not control and cannot administer, bill, or secure.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">02</span><h2>Local build environment</h2><span class="chip med">Medium</span></div>
+    <p class="lead">The <code>npm run build</code> command compiles the source into a <code>dist/</code> folder on a developer machine. It does <b>not</b> deploy, host, or configure anything. Building is step one of many.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P02</span><span class="pt">Toolchain</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Install <b>Node.js 18+</b> and npm.</li>
+          <li>Run <code>npm install</code> — pulls ~344&nbsp;MB of dependencies incl. the native <code>sharp</code> image binary (platform-specific; fails silently on the wrong architecture).</li>
+          <li>Run <code>npm run build</code> → outputs <code>dist/</code> (~41&nbsp;MB, 126 pages).</li>
+          <li>Run <code>npm run preview</code> to smoke-test locally before any deploy.</li>
+        </ul>
+        <div class="consq"><span class="l">Gotcha</span><p>A build that "succeeds" locally can still ship broken image derivatives if <code>sharp</code> resolves to the wrong binary in CI. Verify the built output, not just the exit code.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">03</span><h2>Repository &amp; deploy pipeline</h2><span class="chip high">High</span></div>
+    <p class="lead">Cloudflare Pages builds from a connected Git branch. The build settings are non-default and must match exactly, or the deploy 404s or serves stale routes.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P03</span><span class="pt">Cloudflare Pages project</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Push the source into your own GitHub repo (main branch).</li>
+          <li>Create a Pages project bound to that repo.</li>
+          <li>Build command: <code>npm run build</code> · Output directory: <code>dist</code>.</li>
+          <li>Set <code>NODE_VERSION</code> build env to 18+ or the build fails on Astro 5.</li>
+          <li>Confirm the first deploy renders all 126 routes, not just the homepage.</li>
+        </ul>
+        <div class="consq"><span class="l">Critical</span><p><b>Trailing-slash config.</b> This site depends on <code>trailingSlash:'always'</code> plus canonical/internal-link normalization. Get it wrong and Google reads every URL as a duplicate and deindexes the site — this exact failure has taken KitCat Astro sites from fully-indexed to parked. There is no error message; you find out via lost traffic weeks later.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">04</span><h2>Domain &amp; DNS cutover</h2><span class="chip crit">Critical</span></div>
+    <p class="lead">Live production domain. Every step here is customer-facing the moment it propagates.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P04</span><span class="pt">Cutover sequence</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Complete the inbound domain transfer / nameserver change to your Cloudflare.</li>
+          <li>Recreate all DNS records (apex + www + any mail/verification TXT).</li>
+          <li>Bind the domain to the Pages project; wait for SSL certificate issuance.</li>
+          <li>Re-implement the <code>www → apex</code> 301 redirect (currently a KitCat rule).</li>
+          <li>Verify HTTPS, redirects, and propagation across regions before announcing.</li>
+        </ul>
+        <div class="consq"><span class="l">If mistimed</span><p>Pointing DNS before SSL issues, or dropping a verification TXT record, takes the live site — and every "call now" phone path on it — offline during propagation. Rollback can take up to 24–48h to propagate back.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">05</span><h2>Rehost the blog CMS (Sveltia)</h2><span class="chip crit">Critical</span></div>
+    <p class="lead">The <code>/admin</code> editor is a GitHub-backed headless CMS. Its authentication currently routes through a Cloudflare Worker <b>on KitCat's account</b> (<code>sveltia-cms-auth.getkitcat.workers.dev</code>). This is the single most involved part of the migration and there is no hosted fallback — you must rebuild the auth layer from scratch.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P05</span><span class="pt">CMS auth rebuild</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Register a new <b>GitHub OAuth App</b> → obtain client ID + client secret.</li>
+          <li>Deploy your own <code>sveltia-cms-auth</code> Cloudflare Worker.</li>
+          <li>Set the OAuth <code>CLIENT_ID</code> / <code>CLIENT_SECRET</code> as Worker secrets.</li>
+          <li>Edit <code>public/admin/config.yml</code>: repoint <code>repo:</code> to your GitHub repo and <code>base_url:</code> to your new Worker.</li>
+          <li>Grant the Worker/OAuth app write access to the repo; test a live login + publish round-trip.</li>
+        </ul>
+        <div class="consq"><span class="l">Until done</span><p>The blog editor at <code>/admin</code> is <b>completely locked out</b> — anyone attempting to log in authenticates against KitCat's worker and is rejected. Your team cannot publish or edit a single blog post until this is rebuilt correctly.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">06</span><h2>Lead capture / forms</h2><span class="chip crit">Critical</span></div>
+    <p class="lead">Every contact and quote form submits to the Web3Forms API using an access key tied to <b>KitCat's</b> Web3Forms account.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P06</span><span class="pt">Form backend swap</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Create your own Web3Forms account + access key.</li>
+          <li>Replace the key everywhere it appears in the source (landing pages + service page forms).</li>
+          <li>Point delivery at your own inbox; send a live end-to-end test submission.</li>
+          <li>Confirm spam/honeypot + success-redirect behavior still works.</li>
+        </ul>
+        <div class="consq"><span class="l">If skipped</span><p><b>Every lead is silently lost.</b> Forms will appear to submit successfully while the notifications route to KitCat's account, not yours. No error, no bounce — you simply stop receiving customers and don't know why.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">07</span><h2>SEO / GEO integrity</h2><span class="chip high">High</span></div>
+    <p class="lead">The site's ranking depends on machine-readable plumbing that must survive the move intact. This is invisible on-screen and easy to break.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P07</span><span class="pt">Search-integrity checklist</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Preserve the auto-generated <code>sitemap-index.xml</code> and confirm it lists all live URLs.</li>
+          <li>Preserve canonical tags + trailing-slash normalization (see P03).</li>
+          <li>Keep the JSON-LD schema, <code>robots.txt</code>, and <code>llms.txt</code> blocks intact.</li>
+          <li>Re-verify the domain in Google Search Console under your account; resubmit the sitemap.</li>
+          <li>Re-map any existing redirects so no indexed URL 404s post-cutover.</li>
+        </ul>
+        <div class="consq"><span class="l">If mishandled</span><p>25+ years of local reputation are anchored to these rankings. A botched canonical or lost redirect map can drop the site out of Google's index for weeks — during which competitors take the calls.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rev">
+    <div class="sec-head"><span class="sec-no">08</span><h2>Analytics &amp; ongoing ownership</h2><span class="chip med">Medium</span></div>
+    <p class="lead">Migration is not the end — a live site is a standing maintenance obligation.</p>
+    <div class="phase">
+      <div class="bar"><span class="pid">P08</span><span class="pt">Tracking + maintenance</span></div>
+      <div class="body">
+        <ul class="steps">
+          <li>Re-provision GA4 / GTM / Cloudflare Zaraz tags under your own accounts.</li>
+          <li>Own dependency + security updates (Astro majors, sharp, wrangler) going forward.</li>
+          <li>Own every future content change, redeploy, and uptime/rollback response.</li>
+          <li>Maintain your own source backups — KitCat's copy is not a support contract.</li>
+        </ul>
+        <div class="consq"><span class="l">Reality</span><p>Once transferred, no part of this system is monitored, patched, or supported by KitCat. A broken deploy at 5pm on a Friday is entirely yours.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="signoff rev">
+    <div class="t">Delivery terms</div>
+    <p>KitCat Agency's obligation is fulfilled upon delivery of the source archive and initiation of the domain transfer. The site is provided <b>as-is</b>. All eight phases above are the responsibility of the receiving party. KitCat provides no warranty, support, or on-call coverage for the self-hosted deployment.</p>
+    <p>The "Built by KitCat" credit in the site footer is retained as authorship attribution of the original work.</p>
+    <div class="offramp">
+      <b>Off-ramp:</b> If in-house migration is not the direction you want, KitCat can continue hosting, maintaining, and running the site under the current arrangement — in which case none of the above is necessary and nothing changes on your end.
+    </div>
+    <div class="stamp"><b>KitCat</b> Agency</div>
+    <p style="margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--ink-faint)">Handoff runbook · precisionplumbingpros.com · Rev 2026-08-20</p>
+  </div>
+
+</div>
